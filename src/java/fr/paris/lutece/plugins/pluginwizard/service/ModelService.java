@@ -35,15 +35,10 @@ package fr.paris.lutece.plugins.pluginwizard.service;
 
 import fr.paris.lutece.plugins.pluginwizard.business.Model;
 import fr.paris.lutece.plugins.pluginwizard.business.ModelHome;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Application;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Attribute;
-import fr.paris.lutece.plugins.pluginwizard.business.model.BusinessClass;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Feature;
-import fr.paris.lutece.plugins.pluginwizard.business.model.PluginModel;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Portlet;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Rest;
+import fr.paris.lutece.plugins.pluginwizard.business.model.*;
 import fr.paris.lutece.plugins.pluginwizard.web.formbean.BusinessClassFormBean;
 import fr.paris.lutece.plugins.pluginwizard.web.formbean.DescriptionFormBean;
+import fr.paris.lutece.plugins.pluginwizard.web.formbean.ServiceClassFormBean;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.ReferenceList;
@@ -920,6 +915,127 @@ public final class ModelService
         }
 
     }
+    /////////////////////////////////////////////////////////////////////////////
+    // SERVICE
+
+    /**
+     * Get a given service class
+     *
+     * @param pm
+     *            The plugin model
+     * @param nServiceClassId
+     *            The service class ID
+     * @return The service class
+     */
+    public static ServiceClass getServiceClass( PluginModel pm, int nServiceClassId )
+    {
+        for ( ServiceClass serviceClass : pm.getServiceClasses( ) )
+        {
+            if ( serviceClass.getId( ) == nServiceClassId )
+            {
+                return serviceClass;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Add a service class to the model
+     *
+     * @param nPluginId
+     *            The plugin's ID
+     * @param serviceClassForm
+     *            The service class form
+     * @return The service class with its ID
+     */
+    public static ServiceClass addServiceClass( int nPluginId, ServiceClassFormBean serviceClassForm )
+    {
+        PluginModel pm = getPluginModel( nPluginId );
+
+        ServiceClass serviceClass;
+
+        try
+        {
+            serviceClass = _mapper.readValue( _mapper.writeValueAsString( serviceClassForm ), ServiceClass.class );
+        }
+        catch( IOException e )
+        {
+            throw new AppException( "Mapping exception", e );
+        }
+        serviceClass.setId( getMaxServiceClassId( pm ) + 1 );
+
+        List<ServiceClass> serviceClasses = pm.getServiceClasses( );
+        serviceClasses.add( serviceClass );
+        pm.setServiceClasses( serviceClasses );
+        savePluginModel( pm );
+
+        return serviceClass;
+    }
+
+    /**
+     * Get The max service class ID
+     *
+     * @param pm
+     *            The Plugin Model
+     * @return The max used ID
+     */
+    private static int getMaxServiceClassId( PluginModel pm )
+    {
+        int nMax = 0;
+
+        for ( ServiceClass serviceClass : pm.getServiceClasses( ) )
+        {
+            if ( serviceClass.getId( ) > nMax )
+            {
+                nMax = serviceClass.getId( );
+            }
+        }
+
+        return nMax;
+    }
+
+    /**
+     * Update a serviceClass
+     *
+     * @param nPluginId
+     *            The plugin's ID
+     * @param serviceClassForm
+     *            The serviceClassForm
+     */
+    public static void updateServiceClass( int nPluginId, ServiceClassFormBean serviceClassForm )
+    {
+        PluginModel pm = getPluginModel( nPluginId );
+        List<ServiceClass> list = pm.getServiceClasses( );
+
+        for ( int i = 0; i < list.size( ); i++ )
+        {
+            ServiceClass serviceClass = list.get( i );
+
+            if ( serviceClass.getId( ) == serviceClassForm.getId( ) )
+            {
+
+                ServiceClass updatedServiceClass;
+
+                try
+                {
+                    updatedServiceClass = _mapper.readValue( _mapper.writeValueAsString( serviceClassForm ), serviceClass.getClass( ) );
+                }
+                catch( IOException e )
+                {
+
+                    throw new AppException( "JSON parsing error", e );
+                }
+
+                list.set( i, updatedServiceClass );
+                pm.setServiceClasses( list );
+
+                savePluginModel( pm );
+
+                break;
+            }
+        }
+    }
 
     // //////////////////////////////////////////////////////////////////////////
     // REST
@@ -1260,6 +1376,20 @@ public final class ModelService
         try
         {
             return _mapper.readValue( _mapper.writeValueAsString( getBusinessClass( pm, nBusinessClassId ) ), BusinessClassFormBean.class );
+        }
+        catch( IOException e )
+        {
+            throw new AppException( "JSON exception", e );
+        }
+    }
+
+    public static ServiceClassFormBean getFormServiceClass( int nPluginId, int nServiceClassId )
+    {
+        PluginModel pm = getPluginModel( nPluginId );
+
+        try
+        {
+            return _mapper.readValue( _mapper.writeValueAsString( getServiceClass( pm, nServiceClassId ) ), ServiceClassFormBean.class );
         }
         catch( IOException e )
         {

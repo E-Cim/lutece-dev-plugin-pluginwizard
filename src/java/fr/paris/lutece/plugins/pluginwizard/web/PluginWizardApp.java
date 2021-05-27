@@ -36,19 +36,14 @@ package fr.paris.lutece.plugins.pluginwizard.web;
 import fr.paris.lutece.plugins.pluginwizard.business.ConfigurationKey;
 import fr.paris.lutece.plugins.pluginwizard.business.ConfigurationKeyHome;
 import fr.paris.lutece.plugins.pluginwizard.business.ModelHome;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Application;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Attribute;
-import fr.paris.lutece.plugins.pluginwizard.business.model.BusinessClass;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Feature;
-import fr.paris.lutece.plugins.pluginwizard.business.model.PluginModel;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Portlet;
-import fr.paris.lutece.plugins.pluginwizard.business.model.Rest;
+import fr.paris.lutece.plugins.pluginwizard.business.model.*;
 import fr.paris.lutece.plugins.pluginwizard.service.MapperService;
 import fr.paris.lutece.plugins.pluginwizard.service.ModelService;
 import fr.paris.lutece.plugins.pluginwizard.service.generator.GeneratorService;
 import fr.paris.lutece.plugins.pluginwizard.web.formbean.BusinessClassFormBean;
 import fr.paris.lutece.plugins.pluginwizard.web.formbean.DescriptionFormBean;
 import fr.paris.lutece.plugins.pluginwizard.web.formbean.PluginNameFormBean;
+import fr.paris.lutece.plugins.pluginwizard.web.formbean.ServiceClassFormBean;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
@@ -96,8 +91,10 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private static final String MARK_ADMIN_FEATURES = "admin_features";
     private static final String MARK_BUSINESS_CLASSES = "business_classes";
     private static final String MARK_BUSINESS_CLASS = "business_class";
+    private static final String MARK_SERVICE_CLASS = "service_class";
     private static final String MARK_BUSINESS_CLASS_ID = "business_class_id";
     private static final String MARK_BUSINESS_CLASSES_COMBO = "combo_business_classes";
+    private static final String MARK_SERVICE_CLASSES = "service_classes";
     private static final String MARK_ATTRIBUTE_TYPE_COMBO = "combo_attribute_type";
     private static final String MARK_SCHEMES_COMBO = "combo_schemes";
     private static final String MARK_ATTRIBUTES_LIST = "attributes_list";
@@ -112,10 +109,12 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private static final String TEMPLATE_MODIFY_PLUGIN_DESCRIPTION = "/skin/plugins/pluginwizard/pluginwizard_modify_plugin_description.html";
     private static final String TEMPLATE_MODIFY_PLUGIN = "/skin/plugins/pluginwizard/pluginwizard_modify_plugin.html";
     private static final String TEMPLATE_MODIFY_BUSINESS_CLASS = "/skin/plugins/pluginwizard/pluginwizard_modify_business_class.html";
+    private static final String TEMPLATE_MODIFY_SERVICE_CLASS = "/skin/plugins/pluginwizard/pluginwizard_modify_service_class.html";
     private static final String TEMPLATE_MANAGE_ADMIN_FEATURES = "/skin/plugins/pluginwizard/pluginwizard_manage_admin_features.html";
     private static final String TEMPLATE_MANAGE_PLUGIN_PORTLETS = "/skin/plugins/pluginwizard/pluginwizard_manage_portlets.html";
     private static final String TEMPLATE_MANAGE_PLUGIN_APPLICATIONS = "/skin/plugins/pluginwizard/pluginwizard_manage_applications.html";
     private static final String TEMPLATE_MANAGE_BUSINESS_CLASSES = "/skin/plugins/pluginwizard/pluginwizard_manage_business_classes.html";
+    private static final String TEMPLATE_MANAGE_SERVICE_CLASSES = "/skin/plugins/pluginwizard/pluginwizard_manage_service_classes.html";
     private static final String TEMPLATE_MANAGE_REST = "/skin/plugins/pluginwizard/pluginwizard_manage_rest.html";
     private static final String TEMPLATE_GET_RECAPITULATE = "/skin/plugins/pluginwizard/pluginwizard_plugin_recapitulate.html";
 
@@ -124,6 +123,7 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private static final String TEMPLATE_CREATE_PLUGIN_PORTLET = "/skin/plugins/pluginwizard/pluginwizard_create_portlet.html";
     private static final String TEMPLATE_CREATE_PLUGIN_APPLICATION = "/skin/plugins/pluginwizard/pluginwizard_create_application.html";
     private static final String TEMPLATE_CREATE_BUSINESS_CLASS = "/skin/plugins/pluginwizard/pluginwizard_create_business_class.html";
+    private static final String TEMPLATE_CREATE_SERVICE_CLASS = "/skin/plugins/pluginwizard/pluginwizard_create_service_class.html";
     private static final String TEMPLATE_CREATE_ATTRIBUTE = "/skin/plugins/pluginwizard/pluginwizard_create_attribute.html";
 
     // MODIFY
@@ -137,6 +137,7 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_FILE = "file";
     private static final String PARAM_BUSINESS_CLASS_ID = "business_class_id";
+    private static final String PARAM_SERVICE_CLASS_ID = "service_class_id";
     private static final String PARAM_ATTRIBUTE_ID = "attribute_id";
     private static final String PARAM_FEATURE_ID = "feature_id";
     private static final String PARAM_APPLICATION_ID = "application_id";
@@ -180,6 +181,17 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private static final String ACTION_CONFIRM_REMOVE_BUSINESS_CLASS = "confirmRemoveBusinessClass";
     private static final String ACTION_REMOVE_BUSINESS_CLASS = "removeBusinessClass";
     private static final String PROPERTY_CONFIRM_REMOVE_BUSINESS_CLASS_MESSAGE = "pluginwizard.siteMessage.confirmRemoveBusinessClass.title";
+
+    // SERVICE CLASS
+    private static final String VIEW_MANAGE_SERVICE_CLASSES = "manageServiceClasses";
+    private static final String VIEW_CREATE_SERVICE_CLASS = "createServiceClass";
+    private static final String VIEW_MODIFY_SERVICE_CLASS = "modifyServiceClass";
+    private static final String ACTION_CREATE_SERVICE_CLASS = "createServiceClass";
+    private static final String ACTION_MODIFY_SERVICE_CLASS = "modifyServiceClass";
+    private static final String ACTION_VALIDATE_SERVICE_CLASS = "validateServiceClass";
+    private static final String ACTION_CONFIRM_REMOVE_SERVICE_CLASS = "confirmRemoveServiceClass";
+    private static final String ACTION_REMOVE_SERVICE_CLASS = "removeServiceClass";
+    private static final String PROPERTY_CONFIRM_REMOVE_SERVICE_CLASS_MESSAGE = "pluginwizard.siteMessage.confirmRemoveServiceClass.title";
 
     // ATTRIBUTE
     private static final String VIEW_CREATE_ATTRIBUTE = "createAttribute";
@@ -233,7 +245,9 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     public static final String INFO_FEATURE_DELETED = "pluginwizard.info.feature.deleted";
     public static final String INFO_BUSINESS_CLASS_CREATED = "pluginwizard.info.businessClass.created";
     public static final String INFO_BUSINESS_CLASS_UPDATED = "pluginwizard.info.businessClass.updated";
+    public static final String INFO_SERVICE_CLASS_UPDATED = "pluginwizard.info.serviceClass.updated";
     public static final String INFO_BUSINESS_CLASS_DELETED = "pluginwizard.info.businessClass.deleted";
+    public static final String INFO_SERVICE_CLASS_CREATED = "pluginwizard.info.serviceClass.created";
     public static final String INFO_ATTRIBUTE_CREATED = "pluginwizard.info.attribute.created";
     public static final String INFO_ATTRIBUTE_UPDATED = "pluginwizard.info.attribute.updated";
     public static final String INFO_ATTRIBUTE_DELETED = "pluginwizard.info.attribute.deleted";
@@ -248,6 +262,7 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     private DescriptionFormBean _description;
     private Feature _feature;
     private BusinessClassFormBean _businessClass;
+    private ServiceClassFormBean _serviceClass;
     private Attribute _attribute;
     private Application _application;
     private Portlet _portlet;
@@ -845,6 +860,126 @@ public class PluginWizardApp extends MVCApplication implements Serializable
     }
 
     // //////////////////////////////////////////////////////////////////////////
+    // SERVICE CLASSES
+    /**
+     * The management screen of service classes associated to the plugin which is generated
+     *
+     * @param request
+     *            The Http Request
+     * @return The html code of the management screen of the service classes
+     */
+    @View( VIEW_MANAGE_SERVICE_CLASSES )
+    public XPage getManageServiceClasses( HttpServletRequest request )
+    {
+        Map<String, Object> model = getModel( );
+        model.put( MARK_PLUGIN_ID, Integer.toString( _nPluginId ) );
+        model.put( MARK_SERVICE_CLASSES, ModelService.getPluginModel( _nPluginId ).getServiceClasses( ) );
+
+        return getXPage( TEMPLATE_MANAGE_SERVICE_CLASSES, getLocale( request ), model );
+    }
+
+    /**
+     * The creation form of a service class
+     *
+     * @param request
+     *            The Http Request
+     * @return The html code of the creation of a service class
+     */
+    @View( VIEW_CREATE_SERVICE_CLASS )
+    public XPage getCreateServiceClass( HttpServletRequest request )
+    {
+        _serviceClass = ( _serviceClass != null ) ? _serviceClass : new ServiceClassFormBean( );
+
+        Map<String, Object> model = getPluginModel( );
+        model.put( MARK_SERVICE_CLASSES, _serviceClass );
+        model.put( MARK_BUSINESS_CLASSES_COMBO, ModelService.getComboBusinessClasses( _nPluginId ) );
+
+        return getXPage( TEMPLATE_CREATE_SERVICE_CLASS, getLocale( request ), model );
+    }
+
+    /**
+     * The creation action of the business class
+     *
+     * @param request
+     *            The Http Request
+     * @return The business class id
+     */
+    @Action( ACTION_CREATE_SERVICE_CLASS )
+    public XPage doCreateServiceClass( HttpServletRequest request )
+    {
+        populate( _serviceClass, request );
+
+        boolean bValidateBean = validateBean( _serviceClass, getLocale( request ) );
+
+        if ( !bValidateBean )
+        {
+            return redirectView( request, VIEW_CREATE_SERVICE_CLASS );
+        }
+
+        ServiceClass serviceClass = ModelService.addServiceClass( _nPluginId, _serviceClass );
+        _serviceClass = null;
+        addInfo( INFO_SERVICE_CLASS_CREATED, getLocale( request ) );
+
+        return redirect( request, VIEW_MODIFY_SERVICE_CLASS, PARAM_SERVICE_CLASS_ID, serviceClass.getId( ) );
+    }
+
+    /**
+     * Gets the modify service class page
+     *
+     * @param request
+     *            The HTTP request
+     * @return The page
+     */
+    @View( VIEW_MODIFY_SERVICE_CLASS )
+    public XPage getModifyServiceClass( HttpServletRequest request )
+    {
+        int nServiceClassId = Integer.parseInt( request.getParameter( PARAM_SERVICE_CLASS_ID ) );
+        String strRefresh = request.getParameter( PARAM_REFRESH );
+
+        if ( ( _serviceClass == null ) || ( _serviceClass.getId( ) != nServiceClassId ) || ( strRefresh != null ) )
+        {
+            _serviceClass = ModelService.getFormServiceClass( _nPluginId, nServiceClassId );
+        }
+
+        Map<String, Object> model = getPluginModel( );
+        model.put( MARK_SERVICE_CLASS, _serviceClass );
+
+        return getXPage( TEMPLATE_MODIFY_SERVICE_CLASS, getLocale( request ), model );
+    }
+
+    /**
+     * The modification action for the business class
+     *
+     * @param request
+     *            The Http Request
+     * @return The XPage
+     */
+    @Action( ACTION_MODIFY_SERVICE_CLASS )
+    public XPage doModifyServiceClass( HttpServletRequest request )
+    {
+        populate( _serviceClass, request );
+
+        boolean bValidateBean = validateBean( _serviceClass, getLocale( request ) );
+
+        if ( !bValidateBean )
+        {
+            return redirect( request, VIEW_MODIFY_BUSINESS_CLASS, PARAM_SERVICE_CLASS_ID, _serviceClass.getId( ) );
+        }
+
+        ModelService.updateServiceClass( _nPluginId, _serviceClass );
+        _serviceClass = null;
+        addInfo( INFO_SERVICE_CLASS_UPDATED, getLocale( request ) );
+
+        return redirectView( request, VIEW_MANAGE_SERVICE_CLASSES );
+    }
+
+    @Action( ACTION_VALIDATE_SERVICE_CLASS )
+    public XPage doValidateServices( HttpServletRequest request )
+    {
+        return redirectView( request, VIEW_MANAGE_SERVICE_CLASSES );
+    }
+
+    // //////////////////////////////////////////////////////////////////////////
     // ATTRIBUTE
 
     /**
@@ -1317,6 +1452,7 @@ public class PluginWizardApp extends MVCApplication implements Serializable
         model.put( MARK_PLUGIN_PORTLETS, pm.getPortlets( ) );
         model.put( MARK_PLUGIN_REST, pm.getRest( ) );
         model.put( MARK_BUSINESS_CLASSES, pm.getBusinessClasses( ) );
+        model.put( MARK_SERVICE_CLASSES, pm.getServiceClasses( ) );
         model.put( MARK_SCHEMES_COMBO, GeneratorService.getGenerationSchemes( ) );
 
         return getXPage( TEMPLATE_GET_RECAPITULATE, getLocale( request ), model );

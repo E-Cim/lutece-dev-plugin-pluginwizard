@@ -261,6 +261,11 @@
          </list>
       </constructor-arg>
    </bean>
+   <bean id="pluginwizard.generator.admin.java.service" class="fr.paris.lutece.plugins.pluginwizard.service.generator.ServiceClassGenerator">
+      <property name="file">
+         <ref bean="pluginwizard.file.service" />
+      </property>
+   </bean>
    <bean id="pluginwizard.generator.admin.java.xpage" class="fr.paris.lutece.plugins.pluginwizard.service.generator.XPageGenerator">
       <property name="files">
          <ref bean="pluginwizard.list.files.xpage" />
@@ -317,6 +322,11 @@
       </property>
       <property name="template">
          <value>/generators/default/business/gt_business_home.html</value>
+      </property>
+   </bean>
+   <bean id="pluginwizard.file.service" class="fr.paris.lutece.plugins.pluginwizard.service.generator.ServiceFileConfig">
+      <property name="template">
+         <value>/generators/default/service/gt_service_class.html</value>
       </property>
    </bean>
    <bean id="pluginwizard.business.test" class="fr.paris.lutece.plugins.pluginwizard.service.generator.BusinessFileConfig">

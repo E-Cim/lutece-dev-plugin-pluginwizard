@@ -48,6 +48,8 @@ public final class Markers
     public static final String MARK_FEATURE_RIGHT = "feature_right";
     public static final String MARK_BUSINESS_CLASS = "business_class";
     public static final String MARK_BUSINESS_CLASSES = "business_classes";
+    public static final String MARK_SERVICE_CLASS = "service_class";
+    public static final String MARK_SERVICE_CLASSES = "service_classes";
     public static final String MARK_JSP_TYPE = "jsp_type";
     public static final String MARK_PORTLET_TEMPLATE_TYPE = "template_type";
     public static final String MARK_PORTLET_JSP_TYPE = "portlet_jsp_type";

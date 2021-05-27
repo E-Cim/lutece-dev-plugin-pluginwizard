@@ -80,6 +80,7 @@ public class PluginModel
     private List<Feature> _listPluginFeatures;
     private List<Portlet> _listPluginPortlets;
     private List<BusinessClass> _listBusinessClasses;
+    private List<ServiceClass> _listServiceClasses;
     private Rest _rest;
     private boolean _bIsModule;
 
@@ -92,6 +93,7 @@ public class PluginModel
         _listPluginFeatures = new ArrayList<>( );
         _listPluginPortlets = new ArrayList<>( );
         _listBusinessClasses = new ArrayList<>( );
+        _listServiceClasses = new ArrayList<>( );
         _rest = new Rest( );
     }
 
@@ -621,6 +623,24 @@ public class PluginModel
     public void setBusinessClasses( List<BusinessClass> listBusinessClasses )
     {
         _listBusinessClasses = new ArrayList<>( listBusinessClasses );
+    }
+
+    /**
+     * Returns the list of service classes attached to the generated plugin
+     *
+     * @return The list of service classes
+     */
+    public List<ServiceClass> getServiceClasses( )
+    {
+        return new ArrayList<>( _listServiceClasses );
+    }
+
+    /**
+     * Sets the list of service classes attached to the generated plugin
+     */
+    public void setServiceClasses( List<ServiceClass> listServiceClasses )
+    {
+        _listServiceClasses = new ArrayList<>( listServiceClasses );
     }
 
     public List<Feature> BusinessClass( )

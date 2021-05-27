@@ -44,6 +44,26 @@
                             </#if>
                             </#if>
 
+                            <#if service_classes?? >
+                                <#if service_classes?size gt 0 >
+                                    <li>
+                                        <h5>
+                                            <span class="badge badge-info">${service_classes?size}</span> &nbsp;
+                                            <#if service_classes?size = 1 >
+                                                #i18n{pluginwizard.pluginwizard_plugin_recapitulate.labelServiceClasse}
+                                            <#else>
+                                                #i18n{pluginwizard.pluginwizard_plugin_recapitulate.labelServiceClasses}
+                                            </#if>
+                                        </h5>
+                                        <ul>
+                                            <#list service_classes as service >
+                                                <li> <h6> ${service.serviceClass} </h6> </li>
+                                            </#list>
+                                        </ul>
+                                    </li>
+                                </#if>
+                            </#if>
+
                             <#if admin_features?? > 
                             <#if admin_features?size gt 0 > 
                             <li>
